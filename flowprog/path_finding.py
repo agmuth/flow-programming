@@ -1,12 +1,12 @@
 from typing import Any
 from flowprog.graph import Graph, Node, Edge
-from collections import dequeue, defaultdict
+from collections import deque, defaultdict
 from typing import Tuple, Iterable, Any
 
 
 class BreadthFirstSearch:
     def __init__(self) -> None:
-        self.search_dequeue = dequeue()
+        self.search_dequeue = deque()
         self.visited_nodes = defaultdict(False)
         
     def _add_node_to_search_dequeue(self, edge: Edge) -> None:

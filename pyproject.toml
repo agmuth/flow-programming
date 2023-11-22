@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "network flow algorithms"
 authors = ["Andrew Muth <agmuth@gmail.com>"]
 readme = "README.md"
-packages = [{include = "flow_programming"}]
+packages = [{include = "flowprog"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
