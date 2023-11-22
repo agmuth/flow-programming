@@ -47,7 +47,7 @@ class Graph:
     def add_edge(self, edge: Edge) -> None:
         self.node_list[edge.nodes[0]] = None
         self.node_list[edge.nodes[1]] = None
-        self.edge_list[edge.nodes[0]].append(edge)
+        self.edge_list[edge.nodes[0].name].append(edge)
 
     @property
     def nodes(self) -> List[Node]:
