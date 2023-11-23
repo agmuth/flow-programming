@@ -24,6 +24,7 @@ class Node:
 @dataclass
 class Edge:
     nodes: Tuple[Node, Node]
+    weight: float = 1.0
 
     def __str__(self):
         attrs = [*self.nodes]
