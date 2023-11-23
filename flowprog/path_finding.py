@@ -78,15 +78,29 @@ class PriorityFirstSearch:
         return path[::-1]
     
     def __call__(self, graph: Graph, start: Node, end: Node) -> Any:
+        reached_end_node = False
         self.node_dist[start] = 0
         self._add_node_to_search_pqueue(start)
         
         while len(self.search_pqueue) > 0:
-            node_from, dist_from = self._get_node_from_search_pqueue()
-            for edge in graph.edge_list[node_from]:
-                node_to
-                
-                
-            
+            node_curr, dist_curr = self._get_node_from_search_pqueue()
+            for edge in graph.edge_list[node_curr]:
+                node_next = edge.nodes[1]
+                dist_next = edge.weight + dist_curr
+                if dist_next < self.node_dist[node_next]:
+                    # found a shorter path to `node_next`
+                    self.node_dist[node_next] = dist_next
+                    self.prev_node_mapping[node_next] = node_curr
+                    
+                    if node_next == end: 
+                        reached_end_node = True
+                        break
+                    
+                    self._add_node_to_search_pqueue(node_next)
+            if reached_end_node:
+                break         
+        else:
+            return list()  # no path
         
-        return
+        return self._reconstruct_path(start, end)        
+            
