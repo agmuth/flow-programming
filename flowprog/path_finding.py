@@ -1,5 +1,7 @@
 from collections import defaultdict, deque
-from typing import Any, Iterable
+from typing import Any, Iterable, Tuple
+from queue import PriorityQueue
+import numpy as np
 
 from flowprog.graph import Edge, Graph, Node
 
@@ -8,7 +10,7 @@ class BreadthFirstSearch:
     def __init__(self) -> None:
         self.search_deque = deque()
         self.visited_nodes = defaultdict(lambda: False)
-        self.curr_prev_node_mapping = defaultdict(None)
+        self.prev_node_mapping = defaultdict(None)
 
     def _add_edge_to_search_deque(self, edge: Edge) -> None:
         self.search_deque.append(edge)
@@ -20,7 +22,7 @@ class BreadthFirstSearch:
     def _reconstruct_path(self, start: Node, end: Node) -> Iterable[Node]:
         path = [end]
         while path[-1] != start:
-            path.append(self.curr_prev_node_mapping[path[-1]])
+            path.append(self.prev_node_mapping[path[-1]])
         return path[::-1]
 
     def __call__(self, graph: Graph, start: Node, end: Node) -> Any:
@@ -34,7 +36,7 @@ class BreadthFirstSearch:
                 continue
 
             self.visited_nodes[curr_node] = True
-            self.curr_prev_node_mapping[curr_node] = prev_node
+            self.prev_node_mapping[curr_node] = prev_node
 
             if curr_node == end:
                 break
@@ -52,3 +54,39 @@ class DepthFirstSearch(BreadthFirstSearch):
     def _get_edge_from_search_deque(self) -> Edge:
         # LIFO
         return self.search_deque.pop()
+
+
+class PriorityFirstSearch:
+    def __init__(self) -> None:
+        self.search_pqueue = PriorityQueue()
+        self.visited_nodes = defaultdict(lambda: False)
+        self.prev_node_mapping = defaultdict(None)
+        self.node_dist = defaultdict(lambda _: np.Inf)
+        
+    
+    def _add_node_to_search_pqueue(self, node: Node) -> None:
+        dist = self.node_dist[node]
+        self.search_pqueue.put((node, dist))
+
+    def _get_node_from_search_pqueue(self) -> Node:
+        return self.search_pqueue.get()
+
+    def _reconstruct_path(self, start: Node, end: Node) -> Iterable[Node]:
+        path = [end]
+        while path[-1] != start:
+            path.append(self.prev_node_mapping[path[-1]])
+        return path[::-1]
+    
+    def __call__(self, graph: Graph, start: Node, end: Node) -> Any:
+        self.node_dist[start] = 0
+        self._add_node_to_search_pqueue(start)
+        
+        while len(self.search_pqueue) > 0:
+            node_from, dist_from = self._get_node_from_search_pqueue()
+            for edge in graph.edge_list[node_from]:
+                node_to
+                
+                
+            
+        
+        return
