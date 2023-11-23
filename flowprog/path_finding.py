@@ -56,36 +56,39 @@ class DepthFirstSearch(BreadthFirstSearch):
         return self.search_deque.pop()
 
 
-class PriorityFirstSearch:
+class DijkstrasAlgorithm(BreadthFirstSearch):
     def __init__(self) -> None:
-        self.search_pqueue = PriorityQueue()
-        self.visited_nodes = defaultdict(lambda: False)
-        self.prev_node_mapping = defaultdict(None)
-        self.node_dist = defaultdict(lambda _: np.Inf)
+        super().__init__()
+        self.node_dist = defaultdict(lambda: np.Inf)
         
     
-    def _add_node_to_search_pqueue(self, node: Node) -> None:
+    def _add_node_to_search_deque(self, node: Node) -> None:
         dist = self.node_dist[node]
-        self.search_pqueue.put((node, dist))
+        for i, elem in enumerate(self.search_deque):
+            if elem[0] < dist:
+                self.search_deque.insert(i+1, (dist, node))
+                break
+        else:
+            self.search_deque.append((dist, node))
 
-    def _get_node_from_search_pqueue(self) -> Node:
-        return self.search_pqueue.get()
+    def _get_node_from_search_deque(self) -> Tuple[float, Node]:
+        return self.search_deque.pop()[1]
 
-    def _reconstruct_path(self, start: Node, end: Node) -> Iterable[Node]:
-        path = [end]
-        while path[-1] != start:
-            path.append(self.prev_node_mapping[path[-1]])
-        return path[::-1]
     
     def __call__(self, graph: Graph, start: Node, end: Node) -> Any:
         reached_end_node = False
         self.node_dist[start] = 0
-        self._add_node_to_search_pqueue(start)
+        self._add_node_to_search_deque(start)
         
-        while len(self.search_pqueue) > 0:
-            node_curr, dist_curr = self._get_node_from_search_pqueue()
+        while len(self.search_deque) > 0:
+            node_curr = self._get_node_from_search_deque()
+            dist_curr = self.node_dist[node_curr]
+            
+            if self.visited_nodes[node_curr]:
+                continue
+            
             for edge in graph.edge_list[node_curr]:
-                node_next = edge.nodes[1]
+                node_next = edge.nodes[1]                
                 dist_next = edge.weight + dist_curr
                 if dist_next < self.node_dist[node_next]:
                     # found a shorter path to `node_next`
@@ -96,9 +99,11 @@ class PriorityFirstSearch:
                         reached_end_node = True
                         break
                     
-                    self._add_node_to_search_pqueue(node_next)
+                    self._add_node_to_search_deque(node_next)
+            self.visited_nodes[node_curr] = True 
             if reached_end_node:
-                break         
+                break  
+                  
         else:
             return list()  # no path
         
