@@ -3,7 +3,7 @@ from typing import Any, Tuple
 
 import numpy as np
 
-from flowprog.graph_objects import Graph, Node
+from flowprog.graph_objects import Graph, Node, NodePath
 from flowprog.path_finding import BreadthFirstSearch
 
 
@@ -24,7 +24,8 @@ class DijkstrasAlgorithm(BreadthFirstSearch):
     def _get_node_from_search_deque(self) -> Tuple[float, Node]:
         return self.search_deque.pop()[1]
 
-    def __call__(self, graph: Graph, start: Node, end: Node) -> Any:
+    def __call__(self, graph: Graph, start: Node, end: Node) -> NodePath:
+        self.__init__() # need to re init for multiple calls
         reached_end_node = False
         self.node_dist[start] = 0
         self._add_node_to_search_deque(start)
@@ -53,7 +54,4 @@ class DijkstrasAlgorithm(BreadthFirstSearch):
             if reached_end_node:
                 break
 
-        else:
-            return list()  # no path
-
-        return self._reconstruct_path(start, end)
+        return self._reconstruct_node_path(start, end)
