@@ -1,4 +1,4 @@
-from flowprog.graph import Edge, Graph, Node
+from flowprog.graph_objects import Graph, Node, WeightedEdge
 from flowprog.path_finding import DijkstrasAlgorithm
 
 node_a = Node(name="a")
@@ -8,25 +8,25 @@ node_d = Node(name="d")
 node_e = Node(name="e")
 
 
-edge_a_b = Edge((node_a, node_b), 4)
-edge_a_c = Edge((node_a, node_c), 1)
-edge_c_b = Edge((node_c, node_b), 2)
-node_b_d = Edge((node_b, node_d), 1)
-node_c_d = Edge((node_c, node_d), 5)
-node_d_e = Edge((node_d, node_e), 3)
+WeightedEdge_a_b = WeightedEdge((node_a, node_b), 4)
+WeightedEdge_a_c = WeightedEdge((node_a, node_c), 1)
+WeightedEdge_c_b = WeightedEdge((node_c, node_b), 2)
+node_b_d = WeightedEdge((node_b, node_d), 1)
+node_c_d = WeightedEdge((node_c, node_d), 5)
+node_d_e = WeightedEdge((node_d, node_e), 3)
 
 
-edge_list = [
+WeightedEdge_list = [
     # (!) ordering here is important
-    edge_a_b,
-    edge_a_c,
-    edge_c_b,
+    WeightedEdge_a_b,
+    WeightedEdge_a_c,
+    WeightedEdge_c_b,
     node_b_d,
     node_c_d,
     node_d_e,
 ]
 
-graph = Graph(edge_list)
+graph = Graph(WeightedEdge_list)
 
 
 def test_dijkstra():

@@ -24,7 +24,6 @@ class Node:
 @dataclass
 class Edge:
     nodes: Tuple[Node, Node]
-    weight: float = 1.0
 
     def __str__(self):
         attrs = [*self.nodes]
@@ -35,6 +34,11 @@ class Edge:
 
     def __eq__(self, other: Edge):
         return hash(self) == hash(other)
+
+
+@dataclass
+class WeightedEdge(Edge):
+    weight: float = 1.0
 
 
 class Graph:

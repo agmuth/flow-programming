@@ -1,4 +1,4 @@
-from flowprog.graph import Edge, Graph, Node
+from flowprog.graph_objects import Edge, Graph, Node
 from flowprog.path_finding import BreadthFirstSearch, DepthFirstSearch
 
 node_a = Node(name="a")
