@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Any, Tuple
+from typing import Tuple
 
 import numpy as np
 
@@ -25,7 +25,7 @@ class DijkstrasAlgorithm(BreadthFirstSearch):
         return self.search_deque.pop()[1]
 
     def __call__(self, graph: Graph, start: Node, end: Node) -> NodePath:
-        self.__init__() # need to re init for multiple calls
+        self.__init__()  # need to re init for multiple calls
         reached_end_node = False
         self.node_dist[start] = 0
         self._add_node_to_search_deque(start)

@@ -3,7 +3,7 @@ from __future__ import annotations
 from collections import defaultdict
 from dataclasses import dataclass
 from functools import reduce
-from typing import Any, Iterable, List, Optional, Tuple, NewType
+from typing import Any, Iterable, List, NewType, Optional, Tuple
 
 
 @dataclass
@@ -39,38 +39,37 @@ class Edge:
 @dataclass
 class WeightedEdge(Edge):
     weight: float = 0.0
-    
-    
+
+
 @dataclass
 class CapacitatedEdge(Edge):
     capacity: float = 0.0
     flow: float = 0
-   
+
     @property
     def is_residual(self):
         return self.capacity == 0.0
-    
+
     @property
     def remaining_capacity(self):
         return self.capacity - self.flow
-    
+
     def augment_flow(self, augmenting_flow: float):
         self.flow += augmenting_flow * (-1 if self.is_residual else 1)
-   
-   
+
+
 NodePath = NewType("NodePath", List[Node])
 EdgePath = NewType("EdgePath", List[Edge])
 
 # @dataclass
 # class NodePath:
 #     path: List[Node]
-    
-    
+
+
 # @dataclass
 # class EdgePath:
 #     path: List[Edge]
-    
-    
+
 
 class Graph:
     def __init__(self, edge_list: Optional[Iterable[Edge]] = None) -> None:
@@ -84,10 +83,10 @@ class Graph:
         self.node_list[edge.nodes[0]] = None
         self.node_list[edge.nodes[1]] = None
         self.edge_list[edge.nodes[0].name].append(edge)
-        
+
     def remove_edge(self, edge: Edge) -> None:
         self.edge_list[edge.nodes[0]].remove(edge)
-        
+
     def get_edge(self, node_from: Node, node_to: Node) -> Edge:
         for edge in self.edge_list[node_from]:
             if edge.nodes[1] == node_to:
@@ -100,7 +99,11 @@ class Graph:
     @property
     def edges(self) -> List[Edge]:
         return reduce(lambda l1, l2: l1 + l2, self.edge_list.values())
-    
+
     def get_edge_path(self, node_path: NodePath):
-        return EdgePath([self.get_edge(node_from, node_to) for node_from, node_to in zip(node_path[:-1], node_path[1:])])
-    
+        return EdgePath(
+            [
+                self.get_edge(node_from, node_to)
+                for node_from, node_to in zip(node_path[:-1], node_path[1:])
+            ]
+        )
