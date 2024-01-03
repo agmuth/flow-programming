@@ -1,8 +1,8 @@
 import pytest
 
 from flowprog.shortest_path import DijkstrasAlgorithm
-from tests.test_shortest_path.shortest_path_problems import (PROBLEMS,
-                                                        ShortestPathProblem)
+from tests.test_shortest_path.shortest_path_problems import (
+    PROBLEMS, ShortestPathProblem)
 
 
 @pytest.mark.parametrize("problem", PROBLEMS)

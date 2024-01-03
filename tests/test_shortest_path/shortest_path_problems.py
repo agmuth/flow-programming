@@ -21,18 +21,18 @@ def get_problem_1() -> ShortestPathProblem:
     edge_a_b = WeightedEdge((node_a, node_b), 4)
     edge_a_c = WeightedEdge((node_a, node_c), 1)
     edge_c_b = WeightedEdge((node_c, node_b), 2)
-    node_b_d = WeightedEdge((node_b, node_d), 1)
-    node_c_d = WeightedEdge((node_c, node_d), 5)
-    node_d_e = WeightedEdge((node_d, node_e), 3)
+    edge_b_d = WeightedEdge((node_b, node_d), 1)
+    edge_c_d = WeightedEdge((node_c, node_d), 5)
+    edge_d_e = WeightedEdge((node_d, node_e), 3)
 
     edge_list = [
         # (!) ordering here is important
         edge_a_b,
         edge_a_c,
         edge_c_b,
-        node_b_d,
-        node_c_d,
-        node_d_e,
+        edge_b_d,
+        edge_c_d,
+        edge_d_e,
     ]
 
     graph = Graph(edge_list)

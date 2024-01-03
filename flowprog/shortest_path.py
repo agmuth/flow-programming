@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 import numpy as np
 
@@ -76,21 +76,24 @@ class FloydWarshallAlgorithm:
     def get_negative_cycles(self) -> List[NodePath]:
         nodes_in_negative_cycle = list()
         negative_cycles = list()
-        
+
         for node in self.node_dist_mapping.keys():
             if self.node_dist_mapping[node][node] < 0:
                 nodes_in_negative_cycle.append(node)
-        
-        for node in nodes_in_negative_cycle:
-            negative_cycle = self.path(node, node)
-            negative_cycle.pop()
+
+        for start_node in nodes_in_negative_cycle:
+            negative_cycle = [start_node]
+            while True:
+                prev_node = self.prev_node_mapping[start_node][negative_cycle[-1]]
+                if prev_node == start_node:
+                    break
+                negative_cycle.append(prev_node)
+
             negative_cycles.append(negative_cycle)
             for node_in_negative_cycle in negative_cycle:
                 nodes_in_negative_cycle.remove(node_in_negative_cycle)
-        
+
         return negative_cycles
-                
-            
 
     def __call__(self, graph: Graph) -> None:
         self.__init__()  # need to re init for multiple calls
@@ -98,7 +101,7 @@ class FloydWarshallAlgorithm:
         # init dist and prev mappings
         for node in graph.nodes:
             self.node_dist_mapping[node][node] = 0
-            self.prev_node_mapping[node][node] = node
+            # self.prev_node_mapping[node][node] = node
 
         for edge in graph.edges:
             from_node, to_node = edge.nodes
