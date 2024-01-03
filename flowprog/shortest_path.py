@@ -73,8 +73,24 @@ class FloydWarshallAlgorithm:
             path.append(self.prev_node_mapping[start][path[-1]])
         return path[::-1]
 
-    def get_negative_cycles(self) -> Union[None, List[NodePath]]:
-        pass
+    def get_negative_cycles(self) -> List[NodePath]:
+        nodes_in_negative_cycle = list()
+        negative_cycles = list()
+        
+        for node in self.node_dist_mapping.keys():
+            if self.node_dist_mapping[node][node] < 0:
+                nodes_in_negative_cycle.append(node)
+        
+        for node in nodes_in_negative_cycle:
+            negative_cycle = self.path(node, node)
+            negative_cycle.pop()
+            negative_cycles.append(negative_cycle)
+            for node_in_negative_cycle in negative_cycle:
+                nodes_in_negative_cycle.remove(node_in_negative_cycle)
+        
+        return negative_cycles
+                
+            
 
     def __call__(self, graph: Graph) -> None:
         self.__init__()  # need to re init for multiple calls

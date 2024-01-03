@@ -1,16 +1,16 @@
 import pytest
 
 from flowprog.shortest_path import FloydWarshallAlgorithm
-from tests.test_shortest_path.dijkstra_problems import \
-    PROBLEMS as DIJKSTRA_PROBLEMS
-from tests.test_shortest_path.dijkstra_problems import ShortestPathProblem
-from tests.test_shortest_path.floyd_warshall_problems import \
-    PROBLEMS as FLOYD_WARSHAL_PPROBLEMS
-from tests.test_shortest_path.floyd_warshall_problems import \
+from tests.test_shortest_path.shortest_path_problems import \
+    PROBLEMS as SHORTEST_PATH_PROBLEMS
+from tests.test_shortest_path.shortest_path_problems import ShortestPathProblem
+from tests.test_shortest_path.all_pairs_shortest_path_problems import \
+    PROBLEMS as ALL_PAIRS_SHORTEST_PATH_PROBLEMS
+from tests.test_shortest_path.all_pairs_shortest_path_problems import \
     AllPairsShortestPathProblem
 
 
-@pytest.mark.parametrize("problem", FLOYD_WARSHAL_PPROBLEMS)
+@pytest.mark.parametrize("problem", ALL_PAIRS_SHORTEST_PATH_PROBLEMS)
 def test_all_pairs_shortest_path(problem: AllPairsShortestPathProblem):
     floyd_warshall = FloydWarshallAlgorithm()
     floyd_warshall(problem.graph)
@@ -23,7 +23,7 @@ def test_all_pairs_shortest_path(problem: AllPairsShortestPathProblem):
             )
 
 
-@pytest.mark.parametrize("problem", DIJKSTRA_PROBLEMS)
+@pytest.mark.parametrize("problem", SHORTEST_PATH_PROBLEMS)
 def test_shortest_path(problem: ShortestPathProblem):
     floyd_warshall = FloydWarshallAlgorithm()
     floyd_warshall(problem.graph)
@@ -32,4 +32,4 @@ def test_shortest_path(problem: ShortestPathProblem):
 
 
 if __name__ == "__main__":
-    test_shortest_path(DIJKSTRA_PROBLEMS[0])
+    test_shortest_path(SHORTEST_PATH_PROBLEMS[0])
