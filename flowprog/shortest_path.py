@@ -1,5 +1,5 @@
 from collections import defaultdict
-from typing import Tuple
+from typing import List, Tuple, Union
 
 import numpy as np
 
@@ -55,3 +55,51 @@ class DijkstrasAlgorithm(BreadthFirstSearch):
                 break
 
         return self._reconstruct_node_path(start, end)
+
+
+class FloydWarshallAlgorithm:
+    def __init__(self) -> None:
+        self.node_dist_mapping = defaultdict(lambda: defaultdict(lambda: np.inf))
+        self.prev_node_mapping = defaultdict(None)
+
+    def dist(self, start: Node, end: Node) -> float:
+        return self.node_dist_mapping[start][end]
+
+    def path(self, start: Node, end: Node) -> NodePath:
+        if self.node_dist_mapping[start][end] is None:
+            return list()  # no path
+        path = [end]
+        while path[-1] != start:
+            path.append(self.prev_node_mapping[path[-1]])
+        return path[::-1]
+
+    def get_negative_cycles(self) -> Union[None, List[NodePath]]:
+        pass
+
+    def __call__(self, graph: Graph) -> None:
+        self.__init__()  # need to re init for multiple calls
+
+        # init dist and prev mappings
+        for node in graph.nodes:
+            self.node_dist_mapping[node][node] = 0
+            self.prev_node_mapping[node] = node
+
+        for edge in graph.edges:
+            from_node, to_node = edge.nodes
+            self.node_dist_mapping[from_node][to_node] = edge.weight
+            self.prev_node_mapping[to_node] = from_node
+
+        # main body of algo
+        for node_k in graph.nodes:
+            for node_i in graph.nodes:
+                for node_j in graph.nodes:
+                    if (
+                        self.node_dist_mapping[node_i][node_j]
+                        > self.node_dist_mapping[node_i][node_k]
+                        + self.node_dist_mapping[node_k][node_j]
+                    ):
+                        self.node_dist_mapping[node_i][node_j] = (
+                            self.node_dist_mapping[node_i][node_k]
+                            + self.node_dist_mapping[node_k][node_j]
+                        )
+                        self.prev_node_mapping[node_j] = node_k
