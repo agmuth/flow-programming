@@ -60,17 +60,17 @@ class DijkstrasAlgorithm(BreadthFirstSearch):
 class FloydWarshallAlgorithm:
     def __init__(self) -> None:
         self.node_dist_mapping = defaultdict(lambda: defaultdict(lambda: np.inf))
-        self.prev_node_mapping = defaultdict(None)
+        self.prev_node_mapping = defaultdict(lambda: defaultdict(None))
 
     def dist(self, start: Node, end: Node) -> float:
         return self.node_dist_mapping[start][end]
 
     def path(self, start: Node, end: Node) -> NodePath:
-        if self.node_dist_mapping[start][end] is None:
+        if self.node_dist_mapping[start][end] == np.inf:
             return list()  # no path
         path = [end]
         while path[-1] != start:
-            path.append(self.prev_node_mapping[path[-1]])
+            path.append(self.prev_node_mapping[start][path[-1]])
         return path[::-1]
 
     def get_negative_cycles(self) -> Union[None, List[NodePath]]:
@@ -82,12 +82,12 @@ class FloydWarshallAlgorithm:
         # init dist and prev mappings
         for node in graph.nodes:
             self.node_dist_mapping[node][node] = 0
-            self.prev_node_mapping[node] = node
+            self.prev_node_mapping[node][node] = node
 
         for edge in graph.edges:
             from_node, to_node = edge.nodes
             self.node_dist_mapping[from_node][to_node] = edge.weight
-            self.prev_node_mapping[to_node] = from_node
+            self.prev_node_mapping[from_node][to_node] = from_node
 
         # main body of algo
         for node_k in graph.nodes:
@@ -102,4 +102,6 @@ class FloydWarshallAlgorithm:
                             self.node_dist_mapping[node_i][node_k]
                             + self.node_dist_mapping[node_k][node_j]
                         )
-                        self.prev_node_mapping[node_j] = node_k
+                        self.prev_node_mapping[node_i][node_j] = self.prev_node_mapping[
+                            node_k
+                        ][node_j]
