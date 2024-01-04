@@ -57,6 +57,10 @@ class CapacitatedEdge(Edge):
     def augment_flow(self, augmenting_flow: float):
         self.flow += augmenting_flow * (-1 if self.is_residual else 1)
 
+@dataclass
+class CapacitatedCostEdge(CapacitatedEdge):
+    cost: float = 0.0
+
 
 NodePath = NewType("NodePath", List[Node])
 EdgePath = NewType("EdgePath", List[Edge])
