@@ -1,2 +1,2 @@
 # flow-programming
-Network Flow Algorithms
+Network flow algorithms from self study. 

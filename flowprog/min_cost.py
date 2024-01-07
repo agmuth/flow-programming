@@ -1,7 +1,6 @@
 from functools import reduce
 from typing import Tuple
 
-
 from flowprog.graph_objects import CapacitatedCostEdge, Edge, Graph, Node
 from flowprog.max_flow import EdmonsKarpAlgorithm
 from flowprog.path_finding import BreadthFirstSearch
@@ -30,6 +29,7 @@ class MinCostFloydWarshallAlgorithm(FloydWarshallAlgorithm):
 
 
 class CycleCancelingAlgorithm:
+    # TODO: refactor `__call__` method
     def __init__(self) -> None:
         self.find_path = MinCostBFS()
         self.negative_cost_cycle_indentifier = MinCostFloydWarshallAlgorithm()
@@ -114,7 +114,3 @@ class CycleCancelingAlgorithm:
                 current_cost += cycle_cost
 
         return current_cost, min_cost_flow_network
-
-
-class SuccessiveShortestPathAlgorithm:
-    pass
