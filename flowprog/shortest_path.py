@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 import numpy as np
 
-from flowprog.graph_objects import Graph, Node, NodePath
+from flowprog.graph_objects import Edge, Graph, Node, NodePath
 from flowprog.path_finding import BreadthFirstSearch
 
 
@@ -62,6 +62,10 @@ class FloydWarshallAlgorithm:
         self.node_dist_mapping = defaultdict(lambda: defaultdict(lambda: np.inf))
         self.prev_node_mapping = defaultdict(lambda: defaultdict(None))
 
+    @staticmethod
+    def _edge_cond(edge: Edge) -> bool:
+        return True
+
     def dist(self, start: Node, end: Node) -> float:
         return self.node_dist_mapping[start][end]
 
@@ -82,17 +86,24 @@ class FloydWarshallAlgorithm:
                 nodes_in_negative_cycle.append(node)
 
         for start_node in nodes_in_negative_cycle:
+            # build cycle from end to beginning
             negative_cycle = [start_node]
-            while True:
-                prev_node = self.prev_node_mapping[start_node][negative_cycle[-1]]
-                if prev_node == start_node:
+            nodes_in_negative_cycle.remove(start_node)
+            while (
+                len(nodes_in_negative_cycle) >= 0
+            ):  # need iter at 0 to complete cycle else might not hit break
+                current_node = negative_cycle[-1]
+                prev_node = self.prev_node_mapping[start_node][current_node]
+                if prev_node in negative_cycle:
+                    if prev_node != start_node:
+                        # need to pop all nodes that came before prev_node
+                        while negative_cycle[0] != prev_node:
+                            negative_cycle.pop(0)
                     break
                 negative_cycle.append(prev_node)
-
+                nodes_in_negative_cycle.remove(prev_node)
+            negative_cycle = negative_cycle[::-1]
             negative_cycles.append(negative_cycle)
-            for node_in_negative_cycle in negative_cycle:
-                nodes_in_negative_cycle.remove(node_in_negative_cycle)
-
         return negative_cycles
 
     def __call__(self, graph: Graph) -> None:
@@ -104,6 +115,8 @@ class FloydWarshallAlgorithm:
             # self.prev_node_mapping[node][node] = node
 
         for edge in graph.edges:
+            if not self._edge_cond(edge):
+                continue
             from_node, to_node = edge.nodes
             self.node_dist_mapping[from_node][to_node] = edge.weight
             self.prev_node_mapping[from_node][to_node] = from_node

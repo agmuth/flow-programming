@@ -37,15 +37,17 @@ class FordFulkersonAlgorithm:
     def __init__(self) -> None:
         self.find_path = MaxFlowDFS()
 
-    def __call__(self, graph: Graph, source: Node, sink: Node) -> Tuple[float, Graph]:
-        max_flow = 0.0
+    def __call__(
+        self, graph: Graph, source: Node, sink: Node, max_flow: float = np.inf
+    ) -> Tuple[float, Graph]:
+        current_flow = 0.0
         residual_graph = deepcopy(graph)
         for edge in reduce(lambda x1, x2: x1 + x2, residual_graph.edge_list.values()):
             # add reverse arcs to graph
             residual_edge = CapacitatedEdge(edge.nodes[::-1], 0.0, 0.0)
             residual_graph.add_edge(residual_edge)
 
-        while True:
+        while current_flow < max_flow:
             augmenting_path_nodes = self.find_path(residual_graph, source, sink)
 
             if len(augmenting_path_nodes) == 0:
@@ -53,7 +55,8 @@ class FordFulkersonAlgorithm:
 
             augmenting_path_edges = residual_graph.get_edge_path(augmenting_path_nodes)
             augmenting_flow = min([edge.capacity for edge in augmenting_path_edges])
-            max_flow += augmenting_flow
+            augmenting_flow = min(augmenting_flow, max_flow - current_flow)
+            current_flow += augmenting_flow
 
             for augmenting_edge in augmenting_path_edges:
                 for i, edge in enumerate(
@@ -69,7 +72,7 @@ class FordFulkersonAlgorithm:
             if edge.is_residual:
                 residual_graph.remove_edge(edge)
 
-        return max_flow, residual_graph
+        return current_flow, residual_graph
 
 
 class EdmonsKarpAlgorithm(FordFulkersonAlgorithm):
